@@ -25,7 +25,6 @@ class HomeScreen extends React.Component {
     componentWillMount(){
         return fetch('https://facebook.github.io/react-native/movies.json')
             .then((response) => response.json())
-            .then(gists => this.setState({ gists }))
             .then((responseJson) => {
 
                 this.setState({
@@ -39,11 +38,6 @@ class HomeScreen extends React.Component {
     }
 
 
-    renderProducts() {
-        {this.state.gists.map(gist => (
-            <Text key={gist.title}>{gist}</Text>
-        ))}
-    }
 
 
     render(){
@@ -54,9 +48,7 @@ class HomeScreen extends React.Component {
                     renderItem={({item}) => <Text>{item.title}, {item.releaseYear}</Text>}
                     keyExtractor={(item, index) => index}
                 />
-                <Text>
-                    {this.renderProducts()}
-                </Text>
+
                 <Button
                     title='test'
                     onPress={() => this.props.navigation.navigate('Details')}
@@ -123,7 +115,7 @@ class DetailsScreen extends React.Component {
                     title="Go to Details... again"
                     onPress={() =>
                         this.props.navigation.push('Details', {
-                            itemId: foobar,
+                            itemId: randomizeItems,
                         })}
                 />
 
