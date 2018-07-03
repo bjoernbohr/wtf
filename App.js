@@ -4,7 +4,7 @@ import {
     Text,
     View,
     Button
-    } from 'react-native';
+} from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 
 
@@ -18,29 +18,36 @@ class HomeScreen extends React.Component {
         super(props);
         this.state = {
             isLoading: true,
-            gists : []
         }
     }
 
     componentWillMount(){
         return fetch('https://facebook.github.io/react-native/movies.json')
+
             .then((response) => response.json())
             .then((responseJson) => {
+                let movieArray = [];
 
                 this.setState({
-                    dataSource: responseJson.movies
+                    dataSource: responseJson.movies,
+                    movieList:  movieArray.push(responseJson.movies),
+                    fuckOff: movieArray
                 }, function() {
                 });
             })
             .catch((error) =>{
                 console.error(error);
             });
+
+;
     }
 
 
 
 
     render(){
+
+
         return(
             <View>
                 <FlatList
@@ -48,6 +55,7 @@ class HomeScreen extends React.Component {
                     renderItem={({item}) => <Text>{item.title}, {item.releaseYear}</Text>}
                     keyExtractor={(item, index) => index}
                 />
+
 
                 <Button
                     title='test'
@@ -68,7 +76,7 @@ class DetailsScreen extends React.Component {
         this.state = {
             isLoading: true,
         },
-        this.ArrayItems = [
+            this.ArrayItems = [
                 'January',
                 'February',
                 'March',
