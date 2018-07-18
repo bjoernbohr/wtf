@@ -26,11 +26,11 @@ class HomeScreen extends React.Component {
 
             .then((response) => response.json())
             .then((responseJson) => {
-                let movieArray = [];
+               let movieArray = [];
 
                 this.setState({
                     dataSource: responseJson.movies,
-                    movieList:  movieArray.push(responseJson.movies),
+                    movieList:  movieArray.push(responseJson.movies[Math.floor( Math.floor(Math.random()*responseJson.movies.length))]),
                     fuckOff: movieArray
                 }, function() {
                 });
@@ -47,16 +47,14 @@ class HomeScreen extends React.Component {
 
     render(){
 
-
         return(
             <View>
                 <FlatList
-                    data={this.state.dataSource}
+                    data={this.state.fuckOff}
                     renderItem={({item}) => <Text>{item.title}, {item.releaseYear}</Text>}
                     keyExtractor={(item, index) => index}
                 />
-
-
+                <Text>{console.log(this.state.fuckOff)}</Text>
                 <Button
                     title='test'
                     onPress={() => this.props.navigation.navigate('Details')}
