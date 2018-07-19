@@ -46,7 +46,6 @@ class HomeScreen extends React.Component {
 
 
     render(){
-
         return(
             <View>
                 <FlatList
@@ -54,75 +53,76 @@ class HomeScreen extends React.Component {
                     renderItem={({item}) => <Text>{item.title}, {item.releaseYear}</Text>}
                     keyExtractor={(item, index) => index}
                 />
-                <Text>{console.log(this.state.fuckOff)}</Text>
                 <Button
                     title='test'
-                    onPress={() => this.props.navigation.navigate('Details')}
+                    onPress={() =>
+                        this.props.navigation.navigate('Details',)
+                    }
                 />
             </View>
         );
-
     }
 }
 
 
-
+const moviesUsed = [];
 
 class DetailsScreen extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             isLoading: true,
-        },
-            this.ArrayItems = [
-                'January',
-                'February',
-                'March',
-                'April',
-                'May',
-                'June',
-                'July',
-                'August',
-                'September',
-                'October',
-                'November',
-                'December'
-            ];
+            moviesPushed: moviesUsed,
+        }
     }
 
 
     componentWillMount(){
         return fetch('https://facebook.github.io/react-native/movies.json')
+
             .then((response) => response.json())
             .then((responseJson) => {
+                let movieArray = [];
+
                 this.setState({
                     dataSource: responseJson.movies,
+                    movieList:  movieArray.push(responseJson.movies[Math.floor( Math.floor(Math.random()*responseJson.movies.length))]),
+                    fuckOff: movieArray
                 }, function() {
+                    console.log('-----fetched---');
+                    console.log(this.state.fuckOff[0].id);
+                    console.log('------used----');
+                    console.log(moviesUsed[0]);
+                    console.log('------response----');
+                    console.log(responseJson.movies[0].id);
+
+
+
                 });
             })
             .catch((error) =>{
                 console.error(error);
             });
+
+        ;
     }
 
 
 
     render() {
-        const randomizeItems = this.ArrayItems[Math.floor(Math.random()*this.ArrayItems.length)];
-        const { navigation } = this.props;
-        const itemId = navigation.getParam('itemId');
-        const foobar =   <Text data={this.state.dataSource}> </Text>
-
-
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Text>itemId: {(itemId)}</Text>
                 <Button
                     title="Go to Details... again"
-                    onPress={() =>
+                    onPress={() => {
+                        this.state.moviesPushed.push(this.state.fuckOff[0].id)
                         this.props.navigation.push('Details', {
-                            itemId: randomizeItems,
-                        })}
+                        })}}
+                />
+                <FlatList
+                    data={this.state.fuckOff}
+                    renderItem={({item}) => <Text>{item.title}, {item.releaseYear}</Text>}
+                    keyExtractor={(item, index) => index}
                 />
 
             </View>
@@ -137,6 +137,10 @@ const RootStack = createStackNavigator(
     },
     {
         initialRouteName: 'Home',
+        headerMode: 'none',
+        navigationOptions: {
+            headerVisible: false,
+        }
     }
 );
 
