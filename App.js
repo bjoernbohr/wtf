@@ -77,31 +77,29 @@ class DetailsScreen extends React.Component {
 
             .then((response) => response.json())
             .then((responseJson) => {
+
                 let movieArray = [];
 
                 this.setState({
                     dataSource: responseJson.movies,
                     movieList: movieArray.push(responseJson.movies[Math.floor(Math.floor(Math.random() * responseJson.movies.length))]),
-                    fuckOff: movieArray,
-                }, function () {
-
-                    let response = this.state.fuckOff;
+                    randomMovies: movieArray,
+                },
+                function () {
+                    let response = this.state.randomMovies;
                     let pushed = moviesUsed.toString();
 
                     response.forEach(matchIdFunction);
-                    function matchIdFunction(item, index) {
-                        for (let key in item) {
-                            if (!pushed.includes(item.id)) {
-                                console.log(false);
 
-                            } else {
-                                console.log(true);
-                            };
-                        }
+                    function matchIdFunction(item) {
+                        if (!pushed.includes(item.id)) {
+                           console.log(false);
+
+                        } else {
+                            console.log(true);
+                        };
                     }
-
-
-                    });
+                });
             })
             .catch((error) => {
                 console.error(error);
@@ -111,8 +109,6 @@ class DetailsScreen extends React.Component {
     }
 
 
-
-
     render() {
 
         return (
@@ -120,12 +116,13 @@ class DetailsScreen extends React.Component {
                 <Button
                     title="Go to Details... again"
                     onPress={() => {
-                        this.state.moviesPushed.push(this.state.fuckOff[0].id)
+                        this.state.moviesPushed.push(this.state.randomMovies[0].id)
                         this.props.navigation.push('Details', {})
                     }}
                 />
+
                 <FlatList
-                    data={this.state.fuckOff}
+                    data={this.state.randomMovies}
                     renderItem={({item}) => <Text>{item.title}, {item.releaseYear}</Text>}
                     keyExtractor={(item, index) => index}
                 />
@@ -142,8 +139,9 @@ const RootStack = createStackNavigator(
     {
         initialRouteName: 'Home',
         headerMode: 'none',
+        gesturesEnabled:true,
         navigationOptions: {
-            headerVisible: false,
+            headerVisible: false
         }
     }
 );
