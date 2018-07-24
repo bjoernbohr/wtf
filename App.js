@@ -3,7 +3,11 @@ import {
     FlatList,
     Text,
     View,
-    Button
+    Button,
+    Image,
+    ImageBackground,
+    Dimensions,
+    TouchableOpacity
 } from 'react-native';
 import {createStackNavigator} from 'react-navigation';
 
@@ -48,6 +52,7 @@ class HomeScreen extends React.Component {
                     renderItem={({item}) => <Text>{item.title}, {item.releaseYear}</Text>}
                     keyExtractor={(item, index) => index}
                 />
+
                 <Button
                     title='test'
                     onPress={() =>
@@ -68,12 +73,13 @@ class DetailsScreen extends React.Component {
         this.state = {
             isLoading: true,
             moviesPushed: moviesUsed,
+            renderProps: ''
         }
     }
 
 
     componentWillMount() {
-        return fetch('https://facebook.github.io/react-native/movies.json')
+        return fetch('https://randomuser.me/api/?results=10')
 
             .then((response) => response.json())
             .then((responseJson) => {
@@ -81,20 +87,19 @@ class DetailsScreen extends React.Component {
                 let movieArray = [];
 
                 this.setState({
-                    dataSource: responseJson.movies,
-                    movieList: movieArray.push(responseJson.movies[Math.floor(Math.floor(Math.random() * responseJson.movies.length))]),
+                    dataSource: responseJson.results,
+                    movieList: movieArray.push(responseJson.results[Math.floor(Math.floor(Math.random() * responseJson.results.length))]),
                     randomMovies: movieArray,
+                    foobar: this.state.renderProps
                 },
                 function () {
                     let response = this.state.randomMovies;
                     let pushed = moviesUsed.toString();
-
                     response.forEach(matchIdFunction);
 
                     function matchIdFunction(item) {
                         if (!pushed.includes(item.id)) {
-                           console.log(false);
-
+                                console.log(false);
                         } else {
                             console.log(true);
                         };
@@ -110,20 +115,34 @@ class DetailsScreen extends React.Component {
 
 
     render() {
-
+        const win = Dimensions.get('window');
         return (
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <View>
                 <Button
-                    title="Go to Details... again"
-                    onPress={() => {
-                        this.state.moviesPushed.push(this.state.randomMovies[0].id)
-                        this.props.navigation.push('Details', {})
-                    }}
+                    title='test'
+                    onPress={() =>
+                        this.props.navigation.navigate('More',
+                            {name: this.state.randomMovies}
+                            )
+                    }
                 />
-
                 <FlatList
                     data={this.state.randomMovies}
-                    renderItem={({item}) => <Text>{item.title}, {item.releaseYear}</Text>}
+                    renderItem={({item}) =>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.state.moviesPushed.push(this.state.randomMovies[0].id)
+                                this.props.navigation.push('Details', {})
+                            }}
+                        >
+                        <ImageBackground style={{flex:1, height: win.height, width: win.height, justifyContent:'center', alignItems: 'center'}} source={{uri: item.picture.large}}>
+                            <Text style={{
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }}>{item.name.first}, {item.name.last}</Text>
+                        </ImageBackground>
+                        </TouchableOpacity >
+                    }
                     keyExtractor={(item, index) => index}
                 />
             </View>
@@ -131,16 +150,33 @@ class DetailsScreen extends React.Component {
     }
 }
 
+
+
+class MoreScreen extends React.Component {
+    render() {
+        return (
+            <View>
+                <Text>{console.log(this.props.navigation.state.params.name)}</Text>
+                <Text>{this.props.navigation.state.params.name[0].name.first}</Text>
+
+            </View>
+        )
+    }
+
+}
+
+
 const RootStack = createStackNavigator(
     {
         Home: HomeScreen,
         Details: DetailsScreen,
+        More: MoreScreen
     },
     {
         initialRouteName: 'Home',
         headerMode: 'none',
-        gesturesEnabled:true,
         navigationOptions: {
+            gesturesEnabled:true,
             headerVisible: false
         }
     }
